@@ -101,7 +101,7 @@ public class TrainLine {
 	public int getSize() {
 
 		// YOUR CODE GOES HERE
-		return 0; // change this!
+		return this.lineMap.length; // change this! //
 	}
 
 	public void reverseDirection() {
@@ -112,6 +112,15 @@ public class TrainLine {
 	public TrainStation travelOneStation(TrainStation current, TrainStation previous) {
 
 		// YOUR CODE GOES HERE
+		if (goingRight) {
+			if (!this.equals(current.getRight().getLine())){
+
+
+
+
+
+			}
+		}
 		return null; // change this!
 	}
 
@@ -126,7 +135,12 @@ public class TrainLine {
 	public TrainStation findStation(String name) {
 
 		// YOUR CODE GOES HERE
-		return null; // change this!
+		for (TrainStation tStation: this.lineMap) {
+			if (tStation.getName().equalsIgnoreCase(name)) {
+				return tStation;
+			}
+		}
+		throw new StationNotFoundException("Station not found");
 	}
 
 	public void sortLine() {
