@@ -111,24 +111,38 @@ public class TrainLine {
 	// You can modify the header to this method to handle an exception. You cannot make any other change to the header.
 	public TrainStation travelOneStation(TrainStation current, TrainStation previous) {
 
-		// YOUR CODE GOES HERE
-		if (goingRight) {
-			if (!this.equals(current.getRight().getLine())){
 
+		if (current.getLine().equals(this)) {
 
+			// YOUR CODE GOES HERE
+			if (current.hasConnection && !current.getTransferStation().equals(previous)) {
+				return current.getTransferStation();
+			}
 
-
+			else {
+				getNext(current);
 
 			}
+
+
 		}
-		return null; // change this!
+		throw new StationNotFoundException("Station not found");
 	}
 
 	// You can modify the header to this method to handle an exception. You cannot make any other change to the header.
 	public TrainStation getNext(TrainStation station) {
 
 		// YOUR CODE GOES HERE
-		return null; // change this!
+		if (station.getLine().equals(this)) {
+
+			if (this.goingRight) {
+				return station.getRight();
+			}
+
+			return station.getLeft();
+		}
+		throw new StationNotFoundException("Station not found");
+
 	}
 
 	// You can modify the header to this method to handle an exception. You cannot make any other change to the header.
@@ -151,7 +165,7 @@ public class TrainLine {
 	public TrainStation[] getLineArray() {
 
 		// YOUR CODE GOES HERE
-		return null; // change this
+		return Arrays.copyOf(this.lineMap,this.lineMap.length); // change this
 	}
 
 	private TrainStation[] shuffleArray(TrainStation[] array) {
@@ -174,6 +188,9 @@ public class TrainLine {
 		TrainStation[] shuffledArray = shuffleArray(lineArray);
 
 		// YOUR CODE GOES HERE
+
+		shuffleArray(this.lineMap);
+		//???????????
 
 	}
 
