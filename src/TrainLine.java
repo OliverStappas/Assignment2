@@ -176,6 +176,11 @@ public class TrainLine {
 	public void sortLine() {
 
 		// YOUR CODE GOES HERE
+
+	}
+
+	public void swap() {
+
 	}
 
 	public TrainStation[] getLineArray() {
