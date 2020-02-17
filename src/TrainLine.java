@@ -101,7 +101,16 @@ public class TrainLine {
 	public int getSize() {
 
 		// YOUR CODE GOES HERE
-		return this.lineMap.length; // change this! //
+        if (this.rightTerminus.equals(null)) {
+            return 0;
+        }
+		int size = 1;
+		TrainStation current = this.rightTerminus;
+		while (!current.equals(this.leftTerminus)) {
+			current = current.getLeft();
+			size += 1;
+		}
+		return size;
 	}
 
 	public void reverseDirection() {
@@ -136,9 +145,16 @@ public class TrainLine {
 		if (station.getLine().equals(this)) {
 
 			if (this.goingRight) {
+			    if (station.isRightTerminal()) {
+			        this.reverseDirection();
+			        return station.getLeft();
+                }
 				return station.getRight();
 			}
-
+            if (station.isLeftTerminal()) {
+                this.reverseDirection();
+                return station.getRight();
+            }
 			return station.getLeft();
 		}
 		throw new StationNotFoundException("Station not found");
@@ -189,9 +205,18 @@ public class TrainLine {
 
 		// YOUR CODE GOES HERE
 
-		shuffleArray(this.lineMap);
-		//???????????
-
+        this.rightTerminus = shuffledArray[shuffledArray.length - 1];
+        this.leftTerminus = shuffledArray[0];
+        TrainStation current = this.rightTerminus;
+        for (int i = shuffledArray.length - 2; i >= 0; i--) {
+            current.setLeft(shuffledArray[i]);
+            current = current.getLeft();
+        }
+        current = this.leftTerminus;
+        for (int i = 1; i < shuffledArray.length; i++) {
+            current.setRight(shuffledArray[i]);
+            current = current.getRight();
+        }
 	}
 
 	public String toString() {
