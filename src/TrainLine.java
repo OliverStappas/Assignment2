@@ -125,11 +125,13 @@ public class TrainLine {
 
 			// YOUR CODE GOES HERE
 			if (current.hasConnection && !current.getTransferStation().equals(previous)) {
+
 				return current.getTransferStation();
 			}
 
 			else {
-				getNext(current);
+
+				return getNext(current);
 
 			}
 
@@ -179,7 +181,7 @@ public class TrainLine {
 	    while (repeat) {
             repeat = false;
             for (int i = 0; i < this.lineMap.length - 2; i++) {
-                if (this.lineMap[i].getName().charAt(0) > this.lineMap[i + 1].getName().charAt(0)) {
+                if (this.lineMap[i].getName().compareTo(this.lineMap[i + 1].getName()) < 0) {
                     TrainStation temp = this.lineMap[i];
                     this.lineMap[i] = this.lineMap[i+1];
                     this.lineMap[i+1] = temp;
@@ -187,8 +189,6 @@ public class TrainLine {
                 }
             }
         }
-
-
 	}
 
 //	public void swap(TrainStation trainStation1, TrainStation trainStation2) {
@@ -200,7 +200,28 @@ public class TrainLine {
 	public TrainStation[] getLineArray() {
 
 		// YOUR CODE GOES HERE
-		return Arrays.copyOf(this.lineMap,this.lineMap.length); // change this
+		TrainStation[] trainStation = new TrainStation[this.getSize()];
+		trainStation[0] = leftTerminus;
+		TrainStation current = trainStation[0];
+		int counter = 1;
+		while (!current.equals(rightTerminus)) {
+			trainStation[counter] = current.getRight();
+			current = current.getRight();
+			counter++;
+		}
+		return trainStation;
+
+
+//		return Arrays.copyOf(this.lineMap, this.lineMap.length); // change this
+
+		//		int size = this.lineMap.length;
+		//		int count = 0;
+		//		TrainStation[] lineArray = new TrainStation[this.lineMap.length];
+		//		while (count < size) {
+		//			lineArray[count] = this.lineMap[count];
+		//			count++;
+		//		}
+		//		return  lineArray;
 	}
 
 	private TrainStation[] shuffleArray(TrainStation[] array) {
@@ -226,16 +247,28 @@ public class TrainLine {
 
         this.rightTerminus = shuffledArray[shuffledArray.length - 1];
         this.leftTerminus = shuffledArray[0];
-        TrainStation current = this.rightTerminus;
+        this.leftTerminus.setLeft(null);
+        this.rightTerminus.setRight(null);
+        this.leftTerminus.setNonTerminal();
+		this.leftTerminus.setLeftTerminal();
+		this.rightTerminus.setNonTerminal();
+		this.rightTerminus.setRightTerminal();
+
+
+		TrainStation current = this.rightTerminus;
         for (int i = shuffledArray.length - 2; i >= 0; i--) {
             current.setLeft(shuffledArray[i]);
             current = current.getLeft();
+            if (i > 0) {
+            	current.setNonTerminal();
+			}
         }
         current = this.leftTerminus;
         for (int i = 1; i < shuffledArray.length; i++) {
             current.setRight(shuffledArray[i]);
             current = current.getRight();
         }
+
 	}
 
 	public String toString() {

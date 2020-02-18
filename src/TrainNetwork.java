@@ -5,45 +5,69 @@ public class TrainNetwork {
     public TrainNetwork(int nLines) {
     	this.networkLines = new TrainLine[nLines];
     }
-    
+
     public void addLines(TrainLine[] lines) {
     	this.networkLines = lines;
     }
-    
+
     public TrainLine[] getLines() {
     	return this.networkLines;
     }
-    
+
     public void dance() {
     	System.out.println("The tracks are moving!");
     	for (TrainLine line: networkLines) {
     		line.shuffleLine();
 		}
     }
-    
+
     public void undance() {
 		for (TrainLine line: networkLines) {
 			line.sortLine();
 		}
 	}
-    
+
     public int travel(String startStation, String startLine, String endStation, String endLine) {
-    	
+
     	TrainLine curLine = this.getLineByName(startLine);//use this variable to store the current line. // = null
     	TrainStation curStation = curLine.findStation(startStation); //use this variable to store the current station. // = null
-		TrainStation prevStation;
+		TrainStation prevStation = null;
+		if (curStation.getRight().equals(curLine.getNext(curStation))) {
+			if (curStation.isLeftTerminal()) {
+
+				prevStation = curStation.getRight();
+			}
+			else {
+
+				prevStation = curStation.getLeft();
+			}
+		}
+
+		else if (curStation.getLeft().equals(curLine.getNext(curStation))) {
+
+			if (curStation.isRightTerminal()) {
+
+				prevStation = curStation.getLeft();
+			}
+			else {
+
+				prevStation = curStation.getRight();
+			}
+		}
+
+		TrainStation tempCurrent;
 
 
-    	
-    	
+
+
     	int hoursCount = 0;
     	System.out.println("Departing from "+startStation);
-    	
+
     	//YOUR CODE GOES HERE
-    	
-    	
-    	while(!endStation.equalsIgnoreCase(curStation.getName())) {
-    		
+
+
+    	while(!endStation.equalsIgnoreCase(curStation.getName()) && !endLine.equalsIgnoreCase(curStation.getName())) {
+
     		if(hoursCount == 168) {
     			System.out.println("Jumped off after spending a full week on the train. Might as well walk.");
     			return hoursCount;
@@ -52,33 +76,35 @@ public class TrainNetwork {
 
 			hoursCount += 1;
 
-    		if (hoursCount % 2 == 0) {
-    			this.undance();
+    		if (hoursCount % 2 == 0 && hoursCount != 0) {
+    			this.dance();
+				curLine = curStation.getLine();
 			}
 
-			prevStation = curStation;
-    		curStation = curLine.getNext(curStation);
-    		curLine = curStation.getTransferLine();
+
+    		tempCurrent = curStation;
+    		curStation = curLine.travelOneStation(curStation,prevStation);
+    		if (curStation == null) {
+				System.out.println("Gottem");
+			}
+			prevStation = tempCurrent;
+			curLine = curStation.getLine();
 
 
 
 
-
-
-    		
     		//prints an update on your current location in the network.
 	    	System.out.println("Traveling on line "+curLine.getName()+":"+curLine.toString());
 	    	System.out.println("Hour "+hoursCount+". Current station: "+curStation.getName()+" on line "+curLine.getName());
 	    	System.out.println("=============================================");
-	    	
-	    	break; //remove this! this break is only there so the template compiles.
+
     		}
-	    	
+
 	    	System.out.println("Arrived at destination after "+hoursCount+" hours!");
 	    	return hoursCount;
     }
-    
-    
+
+
     //you can extend the method header if needed to include an exception. You cannot make any other change to the header.
     public TrainLine getLineByName(String lineName){
     	//YOUR CODE GOES HERE
@@ -90,7 +116,7 @@ public class TrainNetwork {
 
 		throw new LineNotFoundException("Line not found");
     }
-    
+
   //prints a plan of the network for you.
     public void printPlan() {
     	System.out.println("CURRENT TRAIN NETWORK PLAN");
