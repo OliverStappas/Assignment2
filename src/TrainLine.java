@@ -175,13 +175,27 @@ public class TrainLine {
 
 	public void sortLine() {
 
-		// YOUR CODE GOES HERE
+	    boolean repeat = true;
+	    while (repeat) {
+            repeat = false;
+            for (int i = 0; i < this.lineMap.length - 2; i++) {
+                if (this.lineMap[i].getName().charAt(0) > this.lineMap[i + 1].getName().charAt(0)) {
+                    TrainStation temp = this.lineMap[i];
+                    this.lineMap[i] = this.lineMap[i+1];
+                    this.lineMap[i+1] = temp;
+                    repeat = true;
+                }
+            }
+        }
+
 
 	}
 
-	public void swap() {
-
-	}
+//	public void swap(TrainStation trainStation1, TrainStation trainStation2) {
+//	    TrainStation temp = trainStation1;
+//	    trainStation1 = trainStation2;
+//	    trainStation2 = temp;
+//	}
 
 	public TrainStation[] getLineArray() {
 
