@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -77,6 +78,7 @@ public class TrainLine {
 		}
 
 		this.lineMap = this.getLineArray();
+
 
 	}
 
@@ -177,19 +179,197 @@ public class TrainLine {
 
 	public void sortLine() {
 
-	    boolean repeat = true;
-	    while (repeat) {
-            repeat = false;
-            for (int i = 0; i < this.lineMap.length - 2; i++) {
-                if (this.lineMap[i].getName().compareTo(this.lineMap[i + 1].getName()) < 0) {
-                    TrainStation temp = this.lineMap[i];
-                    this.lineMap[i] = this.lineMap[i+1];
-                    this.lineMap[i+1] = temp;
-                    repeat = true;
-                }
-            }
-        }
+
+		boolean sorted = false;
+		TrainStation current = leftTerminus;
+		TrainStation previous = null;
+
+
+		for (int i = 0; i < this.getSize(); i++){
+
+			while (!sorted && current != null) {
+
+				sorted = true;
+
+				if (current.getRight() != null && current.getName().compareTo(current.getRight().getName()) > 0) {
+					current.setNonTerminal();
+
+					System.out.println("\n" + "\n" + "\n" + "\n" + "We are swapping the current " + current.getName() + " with the smaller " + current.getRight().getName() + "\n");
+
+					TrainStation temp = current.getRight();
+
+					//current = current.getRight();
+
+					current.setLeft(current.getRight());
+					current.setRight(current.getRight().getRight());
+					if (current.getRight() == null) {
+						System.out.println("We've reached the right terminus " + "\n");
+
+					} else {
+						System.out.println("The right of " + current.getName() + " is: " + current.getRight().getName() + "\n");
+					}
+					System.out.println("The left of " + current.getName() + " is: " + current.getLeft().getName() + "\n");
+
+
+					temp.setRight(current);
+					temp.setLeft(previous);
+
+//					System.out.println("Is the station a left, or right terminal?");
+//					System.out.println(current.isLeftTerminal());
+//					System.out.println(current.isRightTerminal());
+
+
+					if (previous == null) {
+						current.getLeft().setLeftTerminal();
+						System.out.println("The left terminal is currently " + current.getLeft().getName());
+					} else {
+						previous.setRight(temp);
+					}
+					previous = temp;
+
+					System.out.println("The current number we're going to look at in the next iteration is " + current.getName() + " and the number to the right is: ");
+
+					if (current.getRight() != null) {
+						System.out.println(current.getRight().getName() + "\n");
+					}
+
+					if (current.getRight() == null) {
+						current.setRightTerminal();
+						System.out.println("The next one is null because this is the right terminal" + "\n");
+						current = leftTerminus;
+						System.out.println("Current is now, after itterating: " + current.getName());
+						current.setRight(leftTerminus.getRight());
+						previous = null;
+					}
+
+					sorted = false;
+
+				} else {
+
+					current.setNonTerminal();
+
+					if (previous == null) {
+						current.setLeftTerminal();
+						if (current.getLeft() != null) {
+							System.out.println("The left terminal is currently " + current.getLeft().getName());
+						}
+					}
+
+//					System.out.println("Is the station a left, or right terminal?");
+//					System.out.println(current.isLeftTerminal());
+//					System.out.println(current.isRightTerminal());
+
+					previous = current;
+					current = current.getRight();
+
+
+					if (current != null) {
+						System.out.println("\n" + "\n" + "\n" + "\n" + "The current number " + previous.getName() + " was smaller than the next one " + current.getName() + ". The next next number is ");
+					}
+					if (current != null && current.getRight() != null) {
+						System.out.println(current.getRight().getName() + "\n");
+					}
+
+					if (current != null && current.getRight() == null) {
+						System.out.println("It is actually the terminal" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n");
+						current.setRightTerminal();
+					}
+
+
+				}
+
+				if (sorted) {
+					System.out.println("It got sorted babyyy" + "\n" + "\n" + "\n" + "\n");
+				}
+
+			}
+		}
+
+
+		System.out.println("\n"+"\n"+"\n"+ "Done looping" + "\n"+"\n"+"\n");
+
+
+
+//		TrainStation c = leftTerminus;
+//		int counter = 0;
+//		while (c.getRight() != null) {
+//			System.out.println(counter);
+//			System.out.println(c.getName());
+//			c = c.getRight();
+//
+//			counter+=1;
+//
+//		}
+
+		this.lineMap = getLineArray();
+
+//		for (TrainStation t: lineMap) {
+//			System.out.println("yee");
+//			System.out.println(t.getName());
+//		}
+
+
+
+
+
+
+
+//		boolean repeat = true;
+//		while (repeat) {
+//			repeat = false;
+//
+//			for (int i = 0; i <= this.lineMap.length - 2; i++) {
+//				if (this.lineMap[i].getName().compareTo(this.lineMap[i + 1].getName()) > 0) {
+//					TrainStation temp = this.lineMap[i];
+//					this.lineMap[i] = this.lineMap[i+1];
+//					this.lineMap[i+1] = temp;
+//					if (i != 0) {
+//						this.lineMap[i].setLeft(this.lineMap[i-1]);
+//					}
+//					if (i != this.lineMap.length - 2) {
+//						this.lineMap[i].setRight(this.lineMap[i + 1]);
+//					}
+//					this.lineMap[i+1].setLeft(this.lineMap[i]);
+//					repeat = true;
+//
+//				}
+//			}
+//
+//		}
+//
+//		this.lineMap[0].setLeftTerminal();
+//		this.lineMap[0].setLeft(null);
+//
+//		this.lineMap[this.lineMap.length-1].setRightTerminal();
+//		this.lineMap[this.lineMap.length-1].setRight(null);
+//
+//		this.lineMap = getLineArray();
+//
+//
+//		for (TrainStation t : this.lineMap) {
+//			System.out.println(t.getName());
+//		}
+//
+//		int counter = 0;
+//		TrainStation current = leftTerminus;
+//
+//		while (counter < this.lineMap.length) {
+//			System.out.println(current.getName());
+//			System.out.println("Working" + counter);
+//			current = current.getRight();
+//			counter++;
+//		}
+
 	}
+
+
+
+
+
+
+
+
+
 
 //	public void swap(TrainStation trainStation1, TrainStation trainStation2) {
 //	    TrainStation temp = trainStation1;
