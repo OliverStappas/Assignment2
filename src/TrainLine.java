@@ -25,12 +25,11 @@ public class TrainLine {
 	}
 
 	public TrainLine(TrainStation[] stationList, String name, boolean goingRight)
-	/*
-	 * Constructor for TrainStation input: stationList - An array of TrainStation
-	 * containing the stations to be placed in the line name - Name of the line
-	 * goingRight - boolean indicating the direction of travel
-	 */
-	{
+		/*
+		 * Constructor for TrainStation input: stationList - An array of TrainStation
+		 * containing the stations to be placed in the line name - Name of the line
+		 * goingRight - boolean indicating the direction of travel
+		 */ {
 		TrainStation leftT = stationList[0];
 		TrainStation rightT = stationList[stationList.length - 1];
 
@@ -54,11 +53,11 @@ public class TrainLine {
 	}
 
 	public TrainLine(String[] stationNames, String name,
-			boolean goingRight) {/*
-									 * Constructor for TrainStation. input: stationNames - An array of String
-									 * containing the name of the stations to be placed in the line name - Name of
-									 * the line goingRight - boolean indicating the direction of travel
-									 */
+					 boolean goingRight) {/*
+	 * Constructor for TrainStation. input: stationNames - An array of String
+	 * containing the name of the stations to be placed in the line name - Name of
+	 * the line goingRight - boolean indicating the direction of travel
+	 */
 		TrainStation leftTerminus = new TrainStation(stationNames[0]);
 		TrainStation rightTerminus = new TrainStation(stationNames[stationNames.length - 1]);
 
@@ -103,9 +102,9 @@ public class TrainLine {
 	public int getSize() {
 
 		// YOUR CODE GOES HERE
-        if (this.rightTerminus.equals(null)) {
-            return 0;
-        }
+		if (this.rightTerminus.equals(null)) {
+			return 0;
+		}
 		int size = 1;
 		TrainStation current = this.rightTerminus;
 		while (!current.equals(this.leftTerminus)) {
@@ -129,9 +128,7 @@ public class TrainLine {
 			if (current.hasConnection && !current.getTransferStation().equals(previous)) {
 
 				return current.getTransferStation();
-			}
-
-			else {
+			} else {
 
 				return getNext(current);
 
@@ -149,16 +146,16 @@ public class TrainLine {
 		if (station.getLine().equals(this)) {
 
 			if (this.goingRight) {
-			    if (station.isRightTerminal()) {
-			        this.reverseDirection();
-			        return station.getLeft();
-                }
+				if (station.isRightTerminal()) {
+					this.reverseDirection();
+					return station.getLeft();
+				}
 				return station.getRight();
 			}
-            if (station.isLeftTerminal()) {
-                this.reverseDirection();
-                return station.getRight();
-            }
+			if (station.isLeftTerminal()) {
+				this.reverseDirection();
+				return station.getRight();
+			}
 			return station.getLeft();
 		}
 		throw new StationNotFoundException("Station not found");
@@ -169,7 +166,7 @@ public class TrainLine {
 	public TrainStation findStation(String name) {
 
 		// YOUR CODE GOES HERE
-		for (TrainStation tStation: this.lineMap) {
+		for (TrainStation tStation : this.lineMap) {
 			if (tStation.getName().equalsIgnoreCase(name)) {
 				return tStation;
 			}
@@ -178,190 +175,54 @@ public class TrainLine {
 	}
 
 	public void sortLine() {
+		TrainStation[] tempLine = getLineArray();
 
+		TrainStation tempStation;
 
-		boolean sorted = false;
-		TrainStation current = getLineArray()[0];
-		current.setLeftTerminal();
-		TrainStation previous = null;
-
-		while (!sorted && current != null) {
-
-
-			current = leftTerminus;
-			previous = leftTerminus.getLeft();
-			sorted = true;
-
-			//for (int i = 0; i < this.getSize(); i++){
-			while(current.getRight() != null) {
-
-
-
-				if (current.getName().compareTo(current.getRight().getName()) > 0) {
-					current.setNonTerminal();
-					current.getRight().setNonTerminal();
-
-
-					TrainStation temp = current.getRight();
-
-					//current = current.getRight();
-
-					current.setLeft(current.getRight());
-					current.setRight(current.getRight().getRight());
-
-
-
-					temp.setRight(current);
-					temp.setLeft(previous);
-
-
-
-					if (current.getLeft().getLeft() == null) {
-						leftTerminus.setNonTerminal();
-						current.getLeft().setLeftTerminal();
-					} else {
-						previous.setRight(temp);
-					}
-					previous = temp;
-
-
-					if (current.getRight() == null) {
-						current.setRightTerminal();
-
-					}
-
-					sorted = false;
-
-				} else {
-
-
-					current.setNonTerminal();
-					current.getRight().setNonTerminal();
-
-					if (current.getLeft() == null) {
-						leftTerminus.setNonTerminal();
-						current.setLeftTerminal();
-
-					}
-
-					if (current.getRight() != null) {
-						TrainStation temp = current;
-						current = current.getRight();
-
-
-						current.setLeft(temp);
-						current.setRight(temp.getRight().getRight());
-
-						temp.setRight(current);
-						temp.setLeft(previous);
-						previous = temp;
-
-						current.setNonTerminal();
-					}
-
-
-					if (current.getRight() == null) {
-						current.setRightTerminal();
-					}
-
-
+		for (int j = 0; j < this.getSize() - 1; j ++){
+			for (int i = 0; i < this.getSize() - j - 1; i++) {           //  N-1 is the last index
+				if (tempLine[i].getName().compareTo(tempLine[i+1].getName()) > 0)
+				{
+					tempStation = tempLine[i];
+					tempLine[i] = tempLine[i+1];
+					tempLine[i+1] = tempStation;
 				}
-
-				if (sorted) {
-					System.out.println("It got sorted baby" + "\n" + "\n" + "\n" + "\n");
-				}
-
-
+				    //  now list[ N -ct, ... N-1] is sorted
 			}
 		}
 
-		if (leftTerminus.getLeft() != null) {
-			leftTerminus.setNonTerminal();
+//		for (TrainStation t: tempLine) {
+//			System.out.println(t.getName());
+//		}
+
+		this.leftTerminus.setNonTerminal();
+		this.leftTerminus.setLeftTerminal();
+		this.rightTerminus = tempLine[tempLine.length - 1];
+		this.leftTerminus = tempLine[0];
+		this.leftTerminus.setLeft(null);
+		this.rightTerminus.setRight(null);
+		this.rightTerminus.setNonTerminal();
+		this.rightTerminus.setRightTerminal();
+
+
+		TrainStation current = this.rightTerminus;
+		for (int i = tempLine.length - 2; i >= 0; i--) {
+			current.setLeft(tempLine[i]);
+			current = current.getLeft();
+			if (i > 0) {
+				current.setNonTerminal();
+			}
+		}
+		current = this.leftTerminus;
+		for (int i = 1; i < tempLine.length; i++) {
+			current.setRight(tempLine[i]);
+			current = current.getRight();
 		}
 
-		System.out.println(leftTerminus.getName() + "\t" + "1");
-		System.out.println(leftTerminus.getRight().getName()+ "\t" + "2right") ;
-		System.out.println(leftTerminus.getLeft().getName()+ "\t" + "2left") ;
-		System.out.println(leftTerminus.getRight().getRight().getName()+ "\t" + "3");
-		System.out.println(leftTerminus.getRight().getRight().getRight().getName()+ "\t" + "4");
-		System.out.println(leftTerminus.getRight().getRight().getRight().getRight().getName() + "\t" + "5");
-
-
-		System.out.println("\n"+"\n"+"\n"+ "Done looping" + "\n"+"\n"+"\n");
-
-
-
-//		TrainStation c = leftTerminus;
-//		int counter = 0;
-//		while (c.getRight() != null) {
-//			System.out.println(counter);
-//			System.out.println(c.getName());
-//			c = c.getRight();
-//
-//			counter+=1;
-//
-//		}
-
-		this.lineMap = getLineArray();
-
-//		for (TrainStation t: lineMap) {
-//			System.out.println("yee");
-//			System.out.println(t.getName());
-//		}
-
-
-
-
-
-
-
-//		boolean repeat = true;
-//		while (repeat) {
-//			repeat = false;
-//
-//			for (int i = 0; i <= this.lineMap.length - 2; i++) {
-//				if (this.lineMap[i].getName().compareTo(this.lineMap[i + 1].getName()) > 0) {
-//					TrainStation temp = this.lineMap[i];
-//					this.lineMap[i] = this.lineMap[i+1];
-//					this.lineMap[i+1] = temp;
-//					if (i != 0) {
-//						this.lineMap[i].setLeft(this.lineMap[i-1]);
-//					}
-//					if (i != this.lineMap.length - 2) {
-//						this.lineMap[i].setRight(this.lineMap[i + 1]);
-//					}
-//					this.lineMap[i+1].setLeft(this.lineMap[i]);
-//					repeat = true;
-//
-//				}
-//			}
-//
-//		}
-//
-//		this.lineMap[0].setLeftTerminal();
-//		this.lineMap[0].setLeft(null);
-//
-//		this.lineMap[this.lineMap.length-1].setRightTerminal();
-//		this.lineMap[this.lineMap.length-1].setRight(null);
-//
-//		this.lineMap = getLineArray();
-//
-//
-//		for (TrainStation t : this.lineMap) {
-//			System.out.println(t.getName());
-//		}
-//
-//		int counter = 0;
-//		TrainStation current = leftTerminus;
-//
-//		while (counter < this.lineMap.length) {
-//			System.out.println(current.getName());
-//			System.out.println("Working" + counter);
-//			current = current.getRight();
-//			counter++;
-//		}
 
 	}
+
+
 
 
 
@@ -426,13 +287,13 @@ public class TrainLine {
 
 		// YOUR CODE GOES HERE
 
+		this.leftTerminus.setLeftTerminal();
+		this.rightTerminus.setNonTerminal();
         this.rightTerminus = shuffledArray[shuffledArray.length - 1];
         this.leftTerminus = shuffledArray[0];
         this.leftTerminus.setLeft(null);
         this.rightTerminus.setRight(null);
         this.leftTerminus.setNonTerminal();
-		this.leftTerminus.setLeftTerminal();
-		this.rightTerminus.setNonTerminal();
 		this.rightTerminus.setRightTerminal();
 
 
