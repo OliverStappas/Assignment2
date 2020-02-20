@@ -106,11 +106,12 @@ public class TrainLine {
 			return 0;
 		}
 		int size = 1;
-		TrainStation current = this.rightTerminus;
-		while (!current.equals(this.leftTerminus)) {
-			current = current.getLeft();
+		TrainStation current = this.leftTerminus;
+		while (current.getRight() != null) {
+			current = current.getRight();
 			size += 1;
 		}
+		System.out.println(size);
 		return size;
 	}
 
@@ -174,53 +175,167 @@ public class TrainLine {
 		throw new StationNotFoundException("Station not found");
 	}
 
-	public void sortLine() {
-		TrainStation[] tempLine = getLineArray();
-
-		TrainStation tempStation;
-
-		for (int j = 0; j < this.getSize() - 1; j ++){
-			for (int i = 0; i < this.getSize() - j - 1; i++) {           //  N-1 is the last index
-				if (tempLine[i].getName().compareTo(tempLine[i+1].getName()) > 0)
-				{
-					tempStation = tempLine[i];
-					tempLine[i] = tempLine[i+1];
-					tempLine[i+1] = tempStation;
-				}
-				    //  now list[ N -ct, ... N-1] is sorted
-			}
-		}
-
-//		for (TrainStation t: tempLine) {
-//			System.out.println(t.getName());
+//	public void sortLine() {
+//		TrainStation[] tempLine = getLineArray();
+//
+//		TrainStation tempStation;
+//
+//		for (int j = 0; j < this.getSize() - 1; j ++){
+//			for (int i = 0; i < this.getSize() - j - 1; i++) {           //  N-1 is the last index
+//				if (tempLine[i].getName().compareTo(tempLine[i+1].getName()) > 0)
+//				{
+//					tempStation = tempLine[i];
+//					tempLine[i] = tempLine[i+1];
+//					tempLine[i+1] = tempStation;
+//				}
+//				    //  now list[ N -ct, ... N-1] is sorted
+//			}
 //		}
+//
+////		for (TrainStation t: tempLine) {
+////			System.out.println(t.getName());
+////		}
+//
+//		this.leftTerminus.setNonTerminal();
+//		this.leftTerminus.setLeftTerminal();
+//		this.rightTerminus = tempLine[tempLine.length - 1];
+//		this.leftTerminus = tempLine[0];
+//		this.leftTerminus.setLeft(null);
+//		this.rightTerminus.setRight(null);
+//		this.rightTerminus.setNonTerminal();
+//		this.rightTerminus.setRightTerminal();
+//
+//
+//		TrainStation current = this.rightTerminus;
+//		for (int i = tempLine.length - 2; i >= 0; i--) {
+//			current.setLeft(tempLine[i]);
+//			current = current.getLeft();
+//			if (i > 0) {
+//				current.setNonTerminal();
+//			}
+//		}
+//		current = this.leftTerminus;
+//		for (int i = 1; i < tempLine.length; i++) {
+//			current.setRight(tempLine[i]);
+//			current = current.getRight();
+//		}
+//
+//
+//	}
 
-		this.leftTerminus.setNonTerminal();
-		this.leftTerminus.setLeftTerminal();
-		this.rightTerminus = tempLine[tempLine.length - 1];
-		this.leftTerminus = tempLine[0];
-		this.leftTerminus.setLeft(null);
-		this.rightTerminus.setRight(null);
-		this.rightTerminus.setNonTerminal();
-		this.rightTerminus.setRightTerminal();
+
+    public void sortLine() {
 
 
-		TrainStation current = this.rightTerminus;
-		for (int i = tempLine.length - 2; i >= 0; i--) {
-			current.setLeft(tempLine[i]);
-			current = current.getLeft();
-			if (i > 0) {
-				current.setNonTerminal();
+        int swapped;
+        TrainStation current = this.leftTerminus;
+        TrainStation previous = null;
+
+        do {
+            swapped = 0;
+            current = leftTerminus;
+            previous = null;
+//            while (current.getLeft() != null) {
+//				current = current.getLeft();
+//			}
+//			current.setLeftTerminal();
+//			previous = null;
+
+            while (current.getRight() != null) {
+
+                if (current.getName().compareTo(current.getRight().getName()) > 0) {
+					System.out.println("swapping");
+                    TrainStation temp = current.getRight();
+                    current.setRight(current.getRight().getRight());
+                    current.setLeft(temp);
+                    temp.setLeft(previous);
+                    temp.setRight(current);
+
+                    if (previous != null) {
+						previous.setRight(temp);
+					}
+
+                    previous = temp;
+                    previous.setLeft(temp.getLeft());
+                    previous.setRight(temp.getRight());
+
+                    swapped = 1;
+
+                }
+
+                else {
+					TrainStation temp = current.getLeft();
+
+					previous = current;
+                    current = current.getRight();
+					previous.setLeft(temp);
+					previous.setRight(current);
+
+                }
+
+				if (previous.getLeft() == null) {
+					previous.setLeftTerminal();
+					leftTerminus = previous;
+					System.out.println("Donezo " + previous.getName());
+				}
+
+				else if (previous.getLeft() != null && previous.getLeft().getLeft() == null) {
+					previous.getLeft().setLeftTerminal();
+					leftTerminus = previous.getLeft();
+					System.out.println("Donezo2 " + previous.getLeft().getName());
+				}
+
+            }
+
+        } while (swapped != 0);
+
+        TrainStation check = this.rightTerminus;
+		System.out.println(this.leftTerminus.getName() + " before updating terminus");
+        while (check.getLeft()!= null) {
+
+			check = check.getLeft();
+			check.setNonTerminal();
+            if (check.getLeft() == null) {
+				check.setLeftTerminal();
+
 			}
-		}
-		current = this.leftTerminus;
-		for (int i = 1; i < tempLine.length; i++) {
-			current.setRight(tempLine[i]);
-			current = current.getRight();
-		}
+        }
 
 
-	}
+		System.out.println(this.leftTerminus.getName() + " after updating terminus");
+
+		check = leftTerminus;
+		while (check.getRight()!=null) {
+            System.out.println(check.getName());
+			System.out.println("Wasaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaap");
+			check = check.getRight();
+			check.setNonTerminal();
+
+			if (check.getRight() == null) {
+				check.setRightTerminal();
+			}
+        }
+
+
+
+//        System.out.println(leftTerminus.getName() + "\t" + "1");
+//        System.out.println(leftTerminus.getRight().getName()+ "\t" + "2right") ;
+//        System.out.println(leftTerminus.getLeft().getName()+ "\t" + "2left") ;
+//        System.out.println(leftTerminus.getRight().getRight().getName()+ "\t" + "3");
+//        System.out.println(leftTerminus.getRight().getRight().getRight().getName()+ "\t" + "4");
+//        System.out.println(leftTerminus.getRight().getRight().getRight().getRight().getName() + "\t" + "5");
+
+
+        System.out.println("\n"+"\n"+"\n"+ "Done looping" + "\n"+"\n"+"\n");
+
+
+        this.lineMap = this.getLineArray();
+        this.lineMap[this.getSize() -1].setRightTerminal();
+
+		//System.out.println("Here it is: [" + this.lineMap[0].getName() + ", " + this.lineMap[1].getName()+ ", " + this.lineMap[2].getName()+ ", " + this.lineMap[3].getName()+ ", " + this.lineMap[4] + "]");
+
+    }
+
 
 
 
@@ -246,12 +361,14 @@ public class TrainLine {
 		trainStation[0] = leftTerminus;
 		TrainStation current = trainStation[0];
 		int counter = 1;
-		while (!current.equals(rightTerminus)) {
+		while (current.getRight() != null) { // 		while (!current.equals(rightTerminus)) {
 			trainStation[counter] = current.getRight();
 			current = current.getRight();
 			counter++;
 		}
+
 		return trainStation;
+
 
 
 //		return Arrays.copyOf(this.lineMap, this.lineMap.length); // change this
@@ -287,38 +404,55 @@ public class TrainLine {
 
 		// YOUR CODE GOES HERE
 
-		this.leftTerminus.setLeftTerminal();
+		this.leftTerminus.setNonTerminal();
+
 		this.rightTerminus.setNonTerminal();
-        this.rightTerminus = shuffledArray[shuffledArray.length - 1];
-        this.leftTerminus = shuffledArray[0];
+		this.leftTerminus = shuffledArray[0];
+		this.rightTerminus = shuffledArray[shuffledArray.length - 1];
+
+		(shuffledArray[shuffledArray.length - 1]).setRightTerminal();
+        shuffledArray[0].setLeftTerminal();
         this.leftTerminus.setLeft(null);
         this.rightTerminus.setRight(null);
-        this.leftTerminus.setNonTerminal();
-		this.rightTerminus.setRightTerminal();
+
+//		this.leftTerminus.setLeftTerminal();
+//		this.rightTerminus.setNonTerminal();
+//		this.rightTerminus = shuffledArray[shuffledArray.length - 1];
+//		this.leftTerminus = shuffledArray[0];
+//		this.leftTerminus.setLeft(null);
+//		this.rightTerminus.setRight(null);
+//		this.leftTerminus.setNonTerminal();
+//		this.rightTerminus.setRightTerminal();
+
 
 
 		TrainStation current = this.rightTerminus;
         for (int i = shuffledArray.length - 2; i >= 0; i--) {
             current.setLeft(shuffledArray[i]);
             current = current.getLeft();
-            if (i > 0) {
-            	current.setNonTerminal();
-			}
         }
+
         current = this.leftTerminus;
+
         for (int i = 1; i < shuffledArray.length; i++) {
             current.setRight(shuffledArray[i]);
             current = current.getRight();
         }
+
+        this.lineMap = shuffledArray;
 
 	}
 
 	public String toString() {
 		TrainStation[] lineArr = this.getLineArray();
 		String[] nameArr = new String[lineArr.length];
+		System.out.println("Starting");
 		for (int i = 0; i < lineArr.length; i++) {
 			nameArr[i] = lineArr[i].getName();
+			System.out.println(i);
 		}
+		System.out.println("Finished");
+
 		return Arrays.deepToString(nameArr);
 	}
 
