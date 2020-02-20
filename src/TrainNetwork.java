@@ -84,9 +84,7 @@ public class TrainNetwork {
 
     		tempCurrent = curStation;
     		curStation = curLine.travelOneStation(curStation,prevStation);
-    		if (curStation == null) {
-				System.out.println("Gottem");
-			}
+
 			prevStation = tempCurrent;
 			curLine = curStation.getLine();
 
@@ -123,8 +121,6 @@ public class TrainNetwork {
     	System.out.println("----------------------------");
     	for(int i=0;i<this.networkLines.length;i++) {
     		System.out.println(this.networkLines[i].getName()+":"+this.networkLines[i].toString());
-			System.out.println(" The left terminus is: " + this.networkLines[i].getLeftTerminus().getName());
-			System.out.println(" The right terminus is: " + this.networkLines[i].getRightTerminus().getName());
     		}
     	System.out.println("----------------------------");
     }
