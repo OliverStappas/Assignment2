@@ -29,67 +29,66 @@ public class TrainNetwork {
 
     public int travel(String startStation, String startLine, String endStation, String endLine) {
 
-    	TrainLine curLine = this.getLineByName(startLine);//use this variable to store the current line. // = null
-    	TrainStation curStation = curLine.findStation(startStation); //use this variable to store the current station. // = null
+		TrainLine curLine;
+		TrainStation curStation;
+		TrainLine finalLine;
+		TrainStation finalStation;
+
+		try {
+			curLine = this.getLineByName(startLine);//use this variable to store the current line. // = null
+			finalLine = this.getLineByName(endLine);
+		}
+
+		catch (LineNotFoundException e) {
+			return 168;
+		}
+
+		try {
+			curStation = curLine.findStation(startStation); //use this variable to store the current station. // = null
+			finalStation = finalLine.findStation(endStation);
+		}
+
+		catch (StationNotFoundException e) {
+			return 168;
+		}
+
 		TrainStation prevStation = null;
-		if (curStation.getRight().equals(curLine.getNext(curStation))) {
-			if (curStation.isLeftTerminal()) {
-
-				prevStation = curStation.getRight();
-			}
-			else {
-
-				prevStation = curStation.getLeft();
-			}
-		}
-
-		else if (curStation.getLeft().equals(curLine.getNext(curStation))) {
-
-			if (curStation.isRightTerminal()) {
-
-				prevStation = curStation.getLeft();
-			}
-			else {
-
-				prevStation = curStation.getRight();
-			}
-		}
 
 		TrainStation tempCurrent;
 
-
-
-
     	int hoursCount = 0;
     	System.out.println("Departing from "+startStation);
-
-    	//YOUR CODE GOES HERE
 
 
     	while(!endStation.equalsIgnoreCase(curStation.getName()) && !endLine.equalsIgnoreCase(curStation.getName())) {
 
     		if(hoursCount == 168) {
     			System.out.println("Jumped off after spending a full week on the train. Might as well walk.");
-    			return hoursCount;
+    			return 168;
     		}
 
-
-			hoursCount += 1;
 
     		if (hoursCount % 2 == 0 && hoursCount != 0) {
     			this.dance();
 				curLine = curStation.getLine();
 			}
 
+			hoursCount += 1;
 
-    		tempCurrent = curStation;
-    		curStation = curLine.travelOneStation(curStation,prevStation);
+
+			tempCurrent = curStation;
+
+			try {
+				curStation = curLine.travelOneStation(curStation, prevStation);
+			}
+
+			catch (StationNotFoundException e) {
+    				return hoursCount;
+			}
+
+    		curLine = curStation.getLine();
 
 			prevStation = tempCurrent;
-			curLine = curStation.getLine();
-
-
-
 
     		//prints an update on your current location in the network.
 	    	System.out.println("Traveling on line "+curLine.getName()+":"+curLine.toString());
@@ -100,6 +99,7 @@ public class TrainNetwork {
 
 	    	System.out.println("Arrived at destination after "+hoursCount+" hours!");
 	    	return hoursCount;
+
     }
 
 

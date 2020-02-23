@@ -214,6 +214,8 @@ public class TrainLine {
 					previous.setRight(current);
                 }
 
+                current.setNonTerminal();
+
 				if (previous.getLeft() == null) {
 					previous.setLeftTerminal();
 					leftTerminus = previous;
@@ -222,6 +224,8 @@ public class TrainLine {
 					previous.getLeft().setLeftTerminal();
 					leftTerminus = previous.getLeft();
 				}
+
+
 
 				if (current.getRight() == null) {
 					current.setRightTerminal();
@@ -235,22 +239,6 @@ public class TrainLine {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-//	public void swap(TrainStation trainStation1, TrainStation trainStation2) {
-//	    TrainStation temp = trainStation1;
-//	    trainStation1 = trainStation2;
-//	    trainStation2 = temp;
-//	}
 
 	public TrainStation[] getLineArray() {
 
@@ -267,22 +255,11 @@ public class TrainLine {
 
 		return trainStation;
 
-
-
-//		return Arrays.copyOf(this.lineMap, this.lineMap.length); // change this
-
-		//		int size = this.lineMap.length;
-		//		int count = 0;
-		//		TrainStation[] lineArray = new TrainStation[this.lineMap.length];
-		//		while (count < size) {
-		//			lineArray[count] = this.lineMap[count];
-		//			count++;
-		//		}
-		//		return  lineArray;
 	}
 
 	private TrainStation[] shuffleArray(TrainStation[] array) {
 		Random rand = new Random();
+		rand.setSeed(11);
 
 		for (int i = 0; i < array.length; i++) {
 			int randomIndexToSwap = rand.nextInt(array.length);
