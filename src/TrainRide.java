@@ -10,7 +10,7 @@ public class TrainRide {
 		tNet.printPlan();
 
 		// Travels from Little Whinging to Hogwarts.
-		tNet.travel("1.Little Whinging", "Scarlet", "5.Hogwarts", "Purple");
+		tNet.travel("1.Little Whinging", "Scarlet", "5.Hogwarts", "Purple" );
 		System.out.println("Done!");
 		tNet.printPlan();
 

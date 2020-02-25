@@ -234,7 +234,24 @@ public class TrainLine {
             }
         } while (swapped != 0);
 
-      	this.lineMap = this.getLineArray();
+        TrainStation cur = leftTerminus;
+        cur.setNonTerminal();
+        cur.setLeftTerminal();
+        rightTerminus = cur;
+        while (cur.getRight() != null) {
+        	cur = cur.getRight();
+        	cur.setNonTerminal();
+		}
+        cur.setNonTerminal();
+        cur.setRightTerminal();
+        rightTerminus = cur;
+
+
+		this.lineMap = this.getLineArray();
+		for (TrainStation s: this.lineMap) {
+            System.out.println(s.isLeftTerminal());
+            System.out.println(s.isRightTerminal());
+        }
 
     }
 

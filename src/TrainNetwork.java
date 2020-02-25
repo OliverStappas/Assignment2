@@ -27,28 +27,49 @@ public class TrainNetwork {
 		}
 	}
 
-    public int travel(String startStation, String startLine, String endStation, String endLine) {
+	public int travel(String startStation, String startLine, String endStation, String endLine) {
 
-		TrainLine curLine;
-		TrainStation curStation;
+		TrainLine curLine = null;
+		TrainStation curStation = null;
 		TrainLine finalLine;
 		TrainStation finalStation;
 
+
 		try {
-			curLine = this.getLineByName(startLine);//use this variable to store the current line. // = null
+			curLine = this.getLineByName(startLine); //use this variable to store the current line. // = null
+		}
+
+		catch (LineNotFoundException e) {
+			System.out.println("Departing line not on network");
+		}
+
+		try {
+			curStation = curLine.findStation(startStation);
+		}
+
+		catch (StationNotFoundException e) {
+			System.out.println("Departing station not on network");
+		}
+
+		//	curStation = curLine.findStation(startStation);
+
+		try {
 			finalLine = this.getLineByName(endLine);
 		}
 
 		catch (LineNotFoundException e) {
+			System.out.println("Jumped off after spending a full week on the train. Might as well walk.");
 			return 168;
 		}
 
+		//	finalLine = this.getLineByName(endLine);
+
 		try {
-			curStation = curLine.findStation(startStation); //use this variable to store the current station. // = null
 			finalStation = finalLine.findStation(endStation);
 		}
 
 		catch (StationNotFoundException e) {
+			System.out.println("Jumped off after spending a full week on the train. Might as well walk.");
 			return 168;
 		}
 
@@ -56,20 +77,19 @@ public class TrainNetwork {
 
 		TrainStation tempCurrent;
 
-    	int hoursCount = 0;
-    	System.out.println("Departing from "+startStation);
+		int hoursCount = 0;
+		System.out.println("Departing from "+startStation);
+
+		while(!endStation.equalsIgnoreCase(curStation.getName()) && !endLine.equalsIgnoreCase(curStation.getName())) {
+
+			if(hoursCount == 168) {
+				System.out.println("Jumped off after spending a full week on the train. Might as well walk.");
+				return 168;
+			}
 
 
-    	while(!endStation.equalsIgnoreCase(curStation.getName()) && !endLine.equalsIgnoreCase(curStation.getName())) {
-
-    		if(hoursCount == 168) {
-    			System.out.println("Jumped off after spending a full week on the train. Might as well walk.");
-    			return 168;
-    		}
-
-
-    		if (hoursCount % 2 == 0 && hoursCount != 0) {
-    			this.dance();
+			if (hoursCount % 2 == 0 && hoursCount != 0) {
+				this.dance();
 				curLine = curStation.getLine();
 			}
 
@@ -83,25 +103,24 @@ public class TrainNetwork {
 			}
 
 			catch (StationNotFoundException e) {
-    				return hoursCount;
+				return hoursCount;
 			}
 
-    		curLine = curStation.getLine();
+			curLine = curStation.getLine();
 
 			prevStation = tempCurrent;
 
-    		//prints an update on your current location in the network.
-	    	System.out.println("Traveling on line "+curLine.getName()+":"+curLine.toString());
-	    	System.out.println("Hour "+hoursCount+". Current station: "+curStation.getName()+" on line "+curLine.getName());
-	    	System.out.println("=============================================");
+			//prints an update on your current location in the network.
+			System.out.println("Traveling on line "+curLine.getName()+":"+curLine.toString());
+			System.out.println("Hour "+hoursCount+". Current station: "+curStation.getName()+" on line "+curLine.getName());
+			System.out.println("=============================================");
 
-    		}
+		}
 
-	    	System.out.println("Arrived at destination after "+hoursCount+" hours!");
-	    	return hoursCount;
+		System.out.println("Arrived at destination after "+hoursCount+" hours!");
+		return hoursCount;
 
-    }
-
+	}
 
     //you can extend the method header if needed to include an exception. You cannot make any other change to the header.
     public TrainLine getLineByName(String lineName){
