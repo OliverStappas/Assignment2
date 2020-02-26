@@ -199,6 +199,7 @@ public class TrainLine {
                     if (previous != null) {
 						previous.setRight(temp);
 					}
+
                     previous = temp;
                     previous.setLeft(temp.getLeft());
                     previous.setRight(temp.getRight());
@@ -210,6 +211,10 @@ public class TrainLine {
 					TrainStation temp = current.getLeft();
 					previous = current;
                     current = current.getRight();
+
+                    current.setLeft(previous);
+                    current.setRight(previous.getRight().getRight());
+
 					previous.setLeft(temp);
 					previous.setRight(current);
                 }
@@ -217,42 +222,30 @@ public class TrainLine {
                 current.setNonTerminal();
 
 				if (previous.getLeft() == null) {
+				    previous.setNonTerminal();
 					previous.setLeftTerminal();
 					leftTerminus = previous;
 
 				} else if (previous.getLeft() != null && previous.getLeft().getLeft() == null) {
+				    previous.getLeft().setNonTerminal();
 					previous.getLeft().setLeftTerminal();
 					leftTerminus = previous.getLeft();
 				}
 
 
-
 				if (current.getRight() == null) {
+				    current.setNonTerminal();
 					current.setRightTerminal();
 					this.rightTerminus = current;
 				}
+
             }
+
+
         } while (swapped != 0);
 
-        TrainStation cur = leftTerminus;
-        cur.setNonTerminal();
-        cur.setLeftTerminal();
-        rightTerminus = cur;
-        while (cur.getRight() != null) {
-        	cur = cur.getRight();
-        	cur.setNonTerminal();
-		}
-        cur.setNonTerminal();
-        cur.setRightTerminal();
-        rightTerminus = cur;
 
-
-		this.lineMap = this.getLineArray();
-		for (TrainStation s: this.lineMap) {
-            System.out.println(s.isLeftTerminal());
-            System.out.println(s.isRightTerminal());
-        }
-
+	    this.lineMap = this.getLineArray();
     }
 
 
@@ -306,16 +299,6 @@ public class TrainLine {
         shuffledArray[0].setLeftTerminal();
         this.leftTerminus.setLeft(null);
         this.rightTerminus.setRight(null);
-
-//		this.leftTerminus.setLeftTerminal();
-//		this.rightTerminus.setNonTerminal();
-//		this.rightTerminus = shuffledArray[shuffledArray.length - 1];
-//		this.leftTerminus = shuffledArray[0];
-//		this.leftTerminus.setLeft(null);
-//		this.rightTerminus.setRight(null);
-//		this.leftTerminus.setNonTerminal();
-//		this.rightTerminus.setRightTerminal();
-
 
 
 		TrainStation current = this.rightTerminus;
